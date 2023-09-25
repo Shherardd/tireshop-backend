@@ -2,9 +2,9 @@
   "name": "tireshop-backend",
   "version": "0.0.1",
   "description": "",
-  "author": "",
+  "author": "gerard jonas",
   "private": true,
-  "license": "UNLICENSED",
+  "license": "MIT",
   "scripts": {
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
@@ -22,9 +22,12 @@
   "dependencies": {
     "@nestjs/common": "^10.0.0",
     "@nestjs/core": "^10.0.0",
+    "@nestjs/mapped-types": "*",
     "@nestjs/platform-express": "^10.0.0",
+    "mysql2": "^3.6.1",
     "reflect-metadata": "^0.1.13",
-    "rxjs": "^7.8.1"
+    "rxjs": "^7.8.1",
+    "zod": "^3.22.2"
   },
   "devDependencies": {
     "@nestjs/cli": "^10.0.0",
