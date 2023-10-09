@@ -30,6 +30,11 @@ export class ProductosController {
     return this.productosService.findOne(+id);
   }
 
+  @Get('categoria/:id')
+  findByCategoria(@Param('id') id: string) {
+    return this.productosService.findByCategoria(+id);
+  }
+
   @Patch(':id')
   update(
     @Param('id') id: string,
