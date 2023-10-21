@@ -1,25 +1,38 @@
 import { Injectable, Inject } from '@nestjs/common';
-import { CreateVentaDto } from './dto/create-venta.dto';
+import { CreateVentaDto, CreateVentaDtoSchema } from './dto/create-venta.dto';
 import { UpdateVentaDto } from './dto/update-venta.dto';
 import { POS_PRINTER } from 'src/constants';
 import { ThermalPrinter } from 'node-thermal-printer';
+import ApiResponse from 'src/shared/api-response';
 
 @Injectable()
 export class VentasService {
   constructor(@Inject(POS_PRINTER) private readonly printer: ThermalPrinter) {}
 
   async create(createVentaDto: CreateVentaDto) {
+    try {
+      const validatedVentaDto = CreateVentaDtoSchema.parse(createVentaDto);
+      const res = await this.printTicket();
+      console.log(res);
+
+      return ApiResponse.created('Venta Generada', validatedVentaDto);
+    } catch (error) {
+      return ApiResponse.error(error, 400);
+    }
+  }
+
+  async printTicket() {
     this.printer.alignCenter();
     this.printer.println(`================= MULTILLANTAS =================`);
     this.printer.println(`MWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMWMW`);
     this.printer.cut();
 
     try {
-      await this.printer.execute();
+      const res = await this.printer.execute();
+      return 'Venta creada' + res;
     } catch (error) {
-      return 'Error al imprimir';
+      return 'Error al imprimir' + error;
     }
-    return 'Venta creada';
   }
 
   findAll() {
@@ -31,6 +44,7 @@ export class VentasService {
   }
 
   update(id: number, updateVentaDto: UpdateVentaDto) {
+    console.log(updateVentaDto);
     return `This action updates a #${id} venta`;
   }
 
