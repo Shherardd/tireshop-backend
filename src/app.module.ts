@@ -7,9 +7,20 @@ import { ProductosModule } from './resources/productos/productos.module';
 import { PrinterModule } from './modules/printer/printer.module';
 import { VentasModule } from './resources/ventas/ventas.module';
 import { CategoriasModule } from './resources/categorias/categorias.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
-  imports: [ClientesModule, DatabaseModule, ProductosModule, PrinterModule, VentasModule, CategoriasModule],
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+    ClientesModule,
+    DatabaseModule,
+    ProductosModule,
+    PrinterModule,
+    VentasModule,
+    CategoriasModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })

@@ -12,8 +12,9 @@ export class VentasService {
   async create(createVentaDto: CreateVentaDto) {
     try {
       const validatedVentaDto = CreateVentaDtoSchema.parse(createVentaDto);
-      const res = await this.printTicket();
-      console.log(res);
+      /*const res = await this.printTicket();
+      console.log(res);*/
+      console.log(process.env.DB_HOST);
 
       return ApiResponse.created('Venta Generada', validatedVentaDto);
     } catch (error) {
