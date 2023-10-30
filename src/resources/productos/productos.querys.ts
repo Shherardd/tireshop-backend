@@ -15,7 +15,7 @@
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
  */
 
-export const INSERT_PRODUCTO = `INSERT INTO producto (categoria_id, descripcion, medida, rin, marca, existencia, precio_unitario, precio_descuento) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
+export const INSERT_PRODUCTO = `INSERT INTO producto (categoria_id, descripcion, detalle, medida, rin, marca, modelo, existencia, precio_unitario, precio_descuento, busqueda) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
 export const SELECT_PRODUCTOS = `SELECT * FROM producto where activo = 1`;
 

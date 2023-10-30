@@ -25,15 +25,24 @@ export class ProductosService {
 
       const query = INSERT_PRODUCTO;
 
+      const searchStringRaw = `${validatedData.medida}${validatedData.rin}`;
+      const searchStringClean = searchStringRaw.replace(
+        /[ /rR.,;:?¿¡!\-_(){}\[\]<>*&%$#"'\|~^´¨`+=]/g,
+        '',
+      );
+
       const [result] = await this.connection.execute(query, [
         validatedData.categoria_id,
         validatedData.descripcion,
+        validatedData.detalle,
         validatedData.medida,
         validatedData.rin,
         validatedData.marca,
+        validatedData.modelo,
         validatedData.existencia,
         validatedData.precio_unitario,
         validatedData.precio_descuento,
+        searchStringClean,
       ]);
 
       return ApiResponse.created('Producto creado', result);

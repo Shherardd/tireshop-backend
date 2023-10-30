@@ -20,9 +20,11 @@ import { z } from 'zod';
 export const CreateProductoDtoSchema = z.object({
   categoria_id: z.number(),
   descripcion: z.string(),
+  detalle: z.string(),
   medida: z.string(),
   rin: z.number(),
   marca: z.string(),
+  modelo: z.string(),
   existencia: z.number(),
   precio_unitario: z.number(),
   precio_descuento: z.number(),
@@ -31,12 +33,15 @@ export const CreateProductoDtoSchema = z.object({
 export class CreateProductoDto {
   categoria_id: number;
   descripcion: string;
+  detalle: string;
   medida: string;
   rin: number;
   marca: string;
+  modelo: string;
   existencia: number;
   precio_unitario: number;
   precio_descuento: number;
+  busqueda: string;
 }
 
 /** JSON Body resquest */
