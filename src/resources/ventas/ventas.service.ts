@@ -18,7 +18,7 @@ export class VentasService {
   async create(createVentaDto: CreateVentaDto) {
     try {
       const validatedVentaDto = CreateVentaDtoSchema.parse(createVentaDto);
-      const res = await this.printTicketTest(createVentaDto);
+      const res = await this.printTicket(createVentaDto);
       console.log(res);
 
       return ApiResponse.created('Venta Generada', validatedVentaDto);
@@ -129,10 +129,12 @@ export class VentasService {
     const maxWidth = 48;
 
     const address = 'Av. Hidalgo #4, Barrio Nuevo';
+    const website = 'www.multillantasdetonala.com';
     const city = 'Tonalá, Chis. Mx.';
 
     this.printer.println(city);
     this.printer.println(address);
+    this.printer.println(website);
 
     const date = new Date();
     const dateStr = date.toLocaleDateString();
@@ -140,7 +142,9 @@ export class VentasService {
     this.printer.println(dateStr + ' ' + timeStr);
 
     this.printer.drawLine();
+    this.printer.setTextDoubleWidth();
     this.printer.println('RECIBO DE COMPRA');
+    this.printer.setTextNormal();
     this.printer.drawLine();
 
     this.printer.println(this.getTicketHeaders());
@@ -163,7 +167,8 @@ export class VentasService {
     this.printer.println(totalPad);
     this.printer.drawLine();
 
-    this.printer.println('Gracias por su compra');
+    this.printer.println(`Folio:${detalle.factura.cliente_id}`);
+    this.printer.println('¡Gracias por su compra!');
 
     this.printer.cut();
 
