@@ -66,6 +66,7 @@ class VentaFacturaDto {
   nombre_banco: string;
   tipo_pago: string;
   usuario_id: number;
+  folio: string;
 }
 
 class VentaProductoDto {

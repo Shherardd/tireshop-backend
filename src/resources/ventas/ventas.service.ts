@@ -3,8 +3,10 @@ import { CreateVentaDto, CreateVentaDtoSchema } from './dto/create-venta.dto';
 import { UpdateVentaDto } from './dto/update-venta.dto';
 import { POS_PRINTER } from 'src/constants';
 import { ThermalPrinter } from 'node-thermal-printer';
+import { Connection } from 'mysql2/promise';
+import { MYSQL_CONNECTION } from 'src/constants';
+import { INSERT_FACTURA } from './ventas.querys';
 import ApiResponse from 'src/shared/api-response';
-//import * as path from 'path';
 
 @Injectable()
 export class VentasService {
@@ -13,13 +15,37 @@ export class VentasService {
   private precioUnitarioColSize = 11;
   private subtotalColSize = 11;
 
-  constructor(@Inject(POS_PRINTER) private readonly printer: ThermalPrinter) {}
+  constructor(
+    @Inject(MYSQL_CONNECTION) private readonly connection: Connection,
+    @Inject(POS_PRINTER) private readonly printer: ThermalPrinter,
+  ) {}
 
   async create(createVentaDto: CreateVentaDto) {
     try {
       const validatedVentaDto = CreateVentaDtoSchema.parse(createVentaDto);
-      const res = await this.printTicket(createVentaDto);
+      const res = await this.printTicketTest(createVentaDto);
       console.log(res);
+
+      await this.connection.beginTransaction();
+      //Generar folio factura
+      createVentaDto.factura.folio = this.generarFolio();
+      //Recuperar folio factura
+      await this.connection.execute(INSERT_FACTURA, [
+        createVentaDto.factura.folio,
+        validatedVentaDto.factura.cliente_id,
+        validatedVentaDto.factura.tipo_pago,
+        validatedVentaDto.factura.monto_total,
+        validatedVentaDto.factura.monto_pagado,
+        validatedVentaDto.factura.nombre_banco,
+        validatedVentaDto.factura.cuenta_banco,
+        validatedVentaDto.factura.usuario_id,
+      ]);
+
+      await this.connection.rollback();
+
+      //Guardar venta en base de datos
+
+      //Actualizar existencia de productos
 
       return ApiResponse.created('Venta Generada', validatedVentaDto);
     } catch (error) {
@@ -181,6 +207,28 @@ export class VentasService {
       this.printer.clear();
       return 'Error al imprimir' + error;
     }
+  }
+
+  generarFolio() {
+    const fechaActual = new Date();
+
+    const ano = fechaActual.getFullYear();
+    const mes = fechaActual.getMonth() + 1; // Los meses comienzan desde 0
+    const dia = fechaActual.getDate();
+    const minutosDelDia =
+      fechaActual.getHours() * 60 + fechaActual.getMinutes();
+
+    // Formatear como cadena con ceros a la izquierda si es necesario
+    const folio = `${ano}${this.rellenarCeros(mes)}${this.rellenarCeros(
+      dia,
+    )}${this.rellenarCeros(minutosDelDia)}`;
+
+    return folio;
+  }
+
+  // Función para rellenar con ceros a la izquierda si el número es menor a 10
+  rellenarCeros(numero) {
+    return numero < 10 ? `0${numero}` : `${numero}`;
   }
 
   findAll() {
